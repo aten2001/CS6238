@@ -4,7 +4,7 @@ import java.math.BigInteger;
  * Created by luoyinfeng on 10/15/16.
  */
 public class Ins_table {
-	Utilities util;
+
 	BigInteger[] polynomial;
 	BigInteger q; // the modulo group
 	BigInteger[] alpha;
@@ -29,7 +29,7 @@ public class Ins_table {
 		this.init = init;
 		this.m = init.get_m();
 		this.h = init.get_h();
-		this.util = init.getUtil();
+
 		this.pwd = init.getPwd();
 
 		alpha = new BigInteger[m];
@@ -47,7 +47,7 @@ public class Ins_table {
 
 		q = init.get_q();
 		//System.out.println("In Instruction table: the q i got is: " + q);
-		r = util.getRandomH(q);
+		r = init.getRandomH(q);
 		hpwd = init.get_Hpwd();
 		polynomial = init.getPolynomial();
 		//System.out.println("Calculating alpha beta now..");
@@ -66,11 +66,11 @@ public class Ins_table {
 			if( Math.abs(mean[i] - threshold[i]) > Main.k_i * std_dev[i]){
 					if(mean[i] < threshold[i]){ 
 						System.out.println("disturbing beta " + i); 
-						beta[i] = util.getRandomH(q);
+						beta[i] = init.getRandomH(q);
 					}
 					else{
 						System.out.println("disturbing alpha " + i);
-						alpha[i] = util.getRandomH(q);
+						alpha[i] = init.getRandomH(q);
 					}
 			}			
 		}		
@@ -239,9 +239,9 @@ public class Ins_table {
 	}
 
 	private BigInteger calculateAlphaBeta(BigInteger r, int input, char[] pwd) {
-		BigInteger randomizedX = util.P(r, input, q);
+		BigInteger randomizedX = init.P(r, input, q);
 		//System.out.println("X[" + input + "] is " + randomizedX);
-		BigInteger y = util.evaluatePoly(polynomial, q, randomizedX); // this is
+		BigInteger y = init.evaluatePoly(polynomial, q, randomizedX); // this is
 		// y_{ai}^0/1
 		// in
 		// Monrose
@@ -250,7 +250,7 @@ public class Ins_table {
 		// item
 		// 2
 		//System.out.println("y[" + input + "] is " + y);
-		BigInteger g = util.G(pwd, r, input, q);
+		BigInteger g = init.G(pwd, r, input, q);
 		return y.add(g).mod(q);
 	}
 }

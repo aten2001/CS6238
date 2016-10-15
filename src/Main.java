@@ -9,7 +9,7 @@ public class Main {
 
     public static int counter=0;
     public static void main(String[] args) {
-        if (args.length == 1) {
+        if (args.length == 2) {
             if (args[0].equalsIgnoreCase("input.txt")) {
                 try (BufferedReader br = new BufferedReader(new FileReader(args[0]))) {
                     String line1, line2;
@@ -27,13 +27,13 @@ public class Main {
                         if(counter<5)
                         {
 
-                            Init init = new Init(features,strArray.length);
+                            Init init = new Init(features,strArray.length,args[1]);
                             init.initialization(counter); //fill the init object with values needed later on.
                             writer.println("1");
                         }
                         else
                         {
-                            Init init = new Init(features,strArray.length);
+                            Init init = new Init(features,strArray.length,args[1]);
                             writer.println(init.init_verify());
                         }
                         counter++;

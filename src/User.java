@@ -11,7 +11,7 @@ public class User {
 	private BigInteger[] xValues;
 	private BigInteger[] yValues;
 	Ins_table inst;
-	Utilities util;
+
 	Init init;
 	History_file historyFile;
 	private BigInteger candidateHpwd; 
@@ -19,7 +19,7 @@ public class User {
 
 	public User(Ins_table inst, Init init, History_file historyFile){
 		this.inst = inst;
-		this.util = init.getUtil();
+
 		this.init = init;
 		this.historyFile = historyFile;
 		this.xValues = new BigInteger[init.get_m()];
@@ -94,15 +94,15 @@ public class User {
 				if(value<inst.threshold[i]){			    
 					alpha = inst.getAlpha(i);					
 					//calculating the x and y values from the alpha and beta values
-					xValues[i] = util.P(inst.getR(), 2*i, inst.q);
-					yValues[i] = alpha.subtract((util.G(init.getPwd(), inst.getR(), 2*i, inst.q))).mod(inst.q);
+					xValues[i] = init.P(inst.getR(), 2*i, inst.q);
+					yValues[i] = alpha.subtract((init.G(init.getPwd(), inst.getR(), 2*i, inst.q))).mod(inst.q);
 				}
 				else
 				{
 					beta = inst.getBeta(i);				//a needs to be replaced by beta values
 
-					xValues[i] = util.P(inst.getR(), 2*i+1, inst.q);
-					yValues[i] = beta.subtract((util.G(init.getPwd(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
+					xValues[i] = init.P(inst.getR(), 2*i+1, inst.q);
+					yValues[i] = beta.subtract((init.G(init.getPwd(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
 				}
 				//System.out.println("x[" + i + "] is " + xValues[i]);
 				//System.out.println("y[" + i + "] is " + yValues[i]);
