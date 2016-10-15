@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 import java.util.Scanner;
 
 /**
- * Created by luoyinfeng on 10/15/16.
+ * Created by luoyinfeng on 10/11/16.
  */
 //This is a (big) entity class 
 //Main holds a (singleton) Init object

@@ -1,7 +1,7 @@
 import java.io.*;
 import java.math.BigInteger;
 /**
- * Created by luoyinfeng on 10/15/16.
+ * Created by luoyinfeng on 10/12/16.
  */
 public class Ins_table {
 

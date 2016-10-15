@@ -2,64 +2,37 @@
 import java.math.BigInteger;
 
 /**
- * Created by luoyinfeng on 10/15/16.
+ * Created by luoyinfeng on 10/13/16.
  */
 public class User {
 
 	private BigInteger alpha;
 	private BigInteger beta;
-	private BigInteger[] xValues;
-	private BigInteger[] yValues;
-	Ins_table inst;
-
-	Init init;
-	History_file historyFile;
-	private BigInteger candidateHpwd; 
+	private BigInteger[] x_i;
+	private BigInteger[] y_i;
+	public  Ins_table inst;
+	public  Init init;
+	public  History_file historyFile;
+	private BigInteger input_hwd;
 
 
 	public User(Ins_table inst, Init init, History_file historyFile){
 		this.inst = inst;
-
 		this.init = init;
 		this.historyFile = historyFile;
-		this.xValues = new BigInteger[init.get_m()];
-		this.yValues = new BigInteger[init.get_m()];
+		this.x_i = new BigInteger[init.get_m()];
+		this.y_i = new BigInteger[init.get_m()];
 	}
-	public void doinit() {
-		this.calculateXY(init.feartures); 					 //pass feature value
-		this.calculateHpwd();   							//calling the function to calculate Hpwd
-		//System.out.println("hpwd is " + candidateHpwd);
-		this.init.hpwd = candidateHpwd;
-		String result=this.decryptHistoryFile();							//decrypting the historyFile file.
-		boolean status = this.verifyHistoryFile();			//verifying the historyFile file.
 
-		System.out.println("User Successful");
-
-
-		this.updateHistoryFile();							//updating the historyFile file.
-
-		//init.randomizeInstructionTable();
-
-		//if there are more than h log ins already, update mean and standard deviation.
-		if(historyFile.isFull()) {
-			System.out.println("File is full, updating mean and standard deviation");
-			inst.updateMean(historyFile.getHistoryFile());
-			inst.calculateStd_Dev(historyFile.getHistoryFile());
-			inst.disturbValues();
-		}
-		inst.writeInstrTable();
-	}
-	//assumes threshold, feature values, pwd are already read. 
 	public String doLogin(){
 		this.calculateXY(init.feartures); 					 //pass feature value
 		this.calculateHpwd();   							//calling the function to calculate Hpwd
-		//System.out.println("hpwd is " + candidateHpwd);
-		this.init.hpwd = candidateHpwd;
-		String result=this.decryptHistoryFile();							//decrypting the historyFile file.
+		this.init.hpwd = input_hwd;
+		this.decryptHistoryFile();							//decrypting the historyFile file.
 		boolean status = this.verifyHistoryFile();			//verifying the historyFile file.
 		if(status)
 		{
-			System.out.println("User Successful");
+			System.out.println(init.getUserName()+" login Successful");
 
 		} else {
 			System.out.println("Bad feature values or password.");
@@ -67,12 +40,10 @@ public class User {
 		}
 
 		this.updateHistoryFile();							//updating the historyFile file.
-		
-		//init.randomizeInstructionTable();
-		
+
 		//if there are more than h log ins already, update mean and standard deviation.
 		if(historyFile.isFull()) {
-			System.out.println("File is full, updating mean and standard deviation");
+			System.out.println("Update the historyfile and recalculate the mean and standard deviation");
 			inst.updateMean(historyFile.getHistoryFile());
 			inst.calculateStd_Dev(historyFile.getHistoryFile());
 			inst.disturbValues();
@@ -94,15 +65,15 @@ public class User {
 				if(value<inst.threshold[i]){			    
 					alpha = inst.getAlpha(i);					
 					//calculating the x and y values from the alpha and beta values
-					xValues[i] = init.P(inst.getR(), 2*i, inst.q);
-					yValues[i] = alpha.subtract((init.G(init.getPwd(), inst.getR(), 2*i, inst.q))).mod(inst.q);
+					x_i[i] = init.P(inst.getR(), 2*i, inst.q);
+					y_i[i] = alpha.subtract((init.G(init.getPwd(), inst.getR(), 2*i, inst.q))).mod(inst.q);
 				}
 				else
 				{
 					beta = inst.getBeta(i);				//a needs to be replaced by beta values
 
-					xValues[i] = init.P(inst.getR(), 2*i+1, inst.q);
-					yValues[i] = beta.subtract((init.G(init.getPwd(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
+					x_i[i] = init.P(inst.getR(), 2*i+1, inst.q);
+					y_i[i] = beta.subtract((init.G(init.getPwd(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
 				}
 				//System.out.println("x[" + i + "] is " + xValues[i]);
 				//System.out.println("y[" + i + "] is " + yValues[i]);
@@ -119,15 +90,14 @@ public class User {
 	private void calculateHpwd(){
 		try{
 			int count = init.get_m();
-			this.candidateHpwd = new BigInteger("0");
+			this.input_hwd = new BigInteger("0");
 			for(int i=0; i<count; i++){			
 				//calculated the hardened password from the 
 				//values in the alpha beta instruction table
-				candidateHpwd = this.candidateHpwd.add(yValues[i].multiply(Lamda(i)).mod(inst.q));
+				input_hwd = this.input_hwd.add(y_i[i].multiply(feature_values(i)).mod(inst.q));
 			}
-			candidateHpwd = candidateHpwd.mod(inst.q);
-			//System.out.println("Candidate Hpwd: " + candidateHpwd);
-			//System.out.println("q is " + inst.q);
+			input_hwd = input_hwd.mod(inst.q);
+
 		}
 		catch(Exception e){
 
@@ -136,7 +106,7 @@ public class User {
 
 	//calls the decrypt method in the historyFile file
 	private String decryptHistoryFile(){
-		return historyFile.decrypt(candidateHpwd);
+		return historyFile.decrypt(input_hwd);
 	}
 
 	//verifies the decrypted file
@@ -154,32 +124,25 @@ public class User {
 		//TODO: the instruction table needs to be build
 	}
 
-	//method to calculate lamda that is used in Hped calculation
-	private BigInteger Lamda(int i){
-		BigInteger lamda = new BigInteger("1");
+	//method to calculate feature_values that is used in Hped calculation
+	private BigInteger feature_values(int i){
+		BigInteger feature_values = new BigInteger("1");
 		try{ 
 			int count = init.get_m();
 			for(int j =0; j<count; j++){
 				if(i!=j){
-					BigInteger int1 = (xValues[j].subtract(xValues[i])).mod(inst.q);
+					BigInteger int1 = (x_i[j].subtract(x_i[i])).mod(inst.q);
 					BigInteger int2 = int1.modInverse(inst.q);
-					BigInteger int3 = (xValues[j].multiply(int2)).mod(inst.q);
-					lamda = (lamda.multiply(int3)).mod(inst.q);
-//					lamda = lamda.multiply(xValues[j].multiply((xValues[j].subtract(xValues[i]).mod(inst.q)).modInverse(inst.q)));
+					BigInteger int3 = (x_i[j].multiply(int2)).mod(inst.q);
+					feature_values = (feature_values.multiply(int3)).mod(inst.q);
 				}
 			}
-			//System.out.println("The value of lamda:  "+ lamda);
+
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		return lamda;
+		return feature_values;
 	}
-
-	//getter for candidate password
-	public BigInteger getCandidateHpwd() {
-		return candidateHpwd;
-	}
-
 
 }
