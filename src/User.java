@@ -38,7 +38,7 @@ public class User {
 
 		this.updateHistoryFile();							//updating the historyFile file.
 
-		init.randomizeInstructionTable();
+		//init.randomizeInstructionTable();
 
 		//if there are more than h log ins already, update mean and standard deviation.
 		if(historyFile.isFull()) {
@@ -68,7 +68,7 @@ public class User {
 
 		this.updateHistoryFile();							//updating the historyFile file.
 		
-		init.randomizeInstructionTable();
+		//init.randomizeInstructionTable();
 		
 		//if there are more than h log ins already, update mean and standard deviation.
 		if(historyFile.isFull()) {

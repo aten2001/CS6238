@@ -34,7 +34,7 @@ public class Main {
                         else
                         {
                             Init init = new Init(features,strArray.length,args[1]);
-                            writer.println(init.init_verify());
+                            writer.println(init.user_verify());
                         }
                         counter++;
                     }

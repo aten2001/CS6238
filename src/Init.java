@@ -68,58 +68,33 @@ public class Init {
 		}
 		
 	} 
-	public String init_verify(){
+	public String user_verify(){
 		inst.readInstrTable(); // read the alpha and beta values
 
 		user = new User(inst, this, historyFile);
 		return user.doLogin();
 		
 	}
-
-	
-	protected void choosePolynomial(){
-		polynomial = generatePoly(m, hpwd, q);
-		
-	}
-	private void chooseQ(){
-		//q is the prime 
-		q = getRandomQ();
-	}
-	
-	private void chooseHPwd(){
-		//hpwd is the hardened password
-		hpwd = getRandomH(q);
-	}
 	
 	//This is run when a new user is created
 	//Or else the instruction table is usually
 	//read from a file instead. 
 	private void generateInstructionTable(){
-		//Choose the system parameters for the 1st time
-		chooseQ();
+
+        q = getRandomQ();
 		//System.out.println("q is just chosen. it is " + q);
-		chooseHPwd();
-		//System.out.println("immediately hpwd is " + hpwd + " and compare is " + hpwd.compareTo(BigInteger.ZERO) );
-		//System.out.println("polynomial is just chosen. q is " + q);
-		choosePolynomial();
-		
-		//Calculate the alpha and beta values
-		inst.buildInstrTable(); //calculate the alpha and beta values
-		//System.out.println("instruction table is just built. q is " + q);
-		inst.writeInstrTable(); //write it to disk for future logins to use
+        hpwd = getRandomH(q);
+		//System.out.println("q is just chosen. it is " + q );
+        polynomial = generatePoly(m, hpwd, q);
+        //System.out.println("polynomial is just chosen. q is " + q);
+
+
+		//buildInstrTable
+		inst.buildInstrTable();
+        //encrypted and write it to disk
+		inst.writeInstrTable();
 	}
-	
-	//This is called when an existing user logs off
-	//The polynomial is changed to a new random one.
-	public void randomizeInstructionTable(){
-		this.q = inst.q;
-		choosePolynomial();
-		//Calculate the alpha and beta values
-		inst.buildInstrTable(); //calculate the alpha and beta values
-		System.out.println("Instruction table is rebuilt. ");
-	}
-	
-	
+
 	//This is run to create a new historyFile file
 	//for a new user. Or else the historyFile is usually
 	//read from a file instead.
