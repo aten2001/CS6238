@@ -17,9 +17,9 @@ public class User {
 	private BigInteger candidateHpwd; 
 
 
-	public User(Ins_table inst, Utilities util, Init init, History_file historyFile){
+	public User(Ins_table inst, Init init, History_file historyFile){
 		this.inst = inst;
-		this.util = util;
+		this.util = init.getUtil();
 		this.init = init;
 		this.historyFile = historyFile;
 		this.xValues = new BigInteger[init.get_m()];

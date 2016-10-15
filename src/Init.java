@@ -1,5 +1,7 @@
 
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Scanner;
 
 /**
@@ -12,6 +14,8 @@ import java.util.Scanner;
 //Main passes the init object around to whoever needs the information
 public class Init {
 	private Utilities util;
+    private SecureRandom random;
+    private MessageDigest md;
 	private String userName;
 	int[] feartures; // raw feature values (answers to questions)
 	private char[] pwd; //normal, unhardened password
@@ -53,7 +57,7 @@ public class Init {
 		else
 		{
             inst.readInstrTable(); // read the alpha and beta values
-            user = new User(inst, util, this, historyFile);
+            user = new User(inst,  this, historyFile);
             user.doLogin();
 		}
 		
@@ -61,7 +65,7 @@ public class Init {
 	public String init_verify(){
 		inst.readInstrTable(); // read the alpha and beta values
 
-		user = new User(inst, util, this, historyFile);
+		user = new User(inst, this, historyFile);
 		return user.doLogin();
 		
 	}
