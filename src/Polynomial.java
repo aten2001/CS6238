@@ -6,21 +6,11 @@ import java.security.SecureRandom;
  * Created by luoyinfeng on 10/14/16.
  */
 public class Polynomial {
-    public static BigInteger[] coeffs;  // coefficients
+    public BigInteger[] coeffs;  // coefficients
     public int deg;     // degree of polynomial (0 for the zero polynomial)
     private SecureRandom random;
     // a * x^b
-    public Polynomial(int m, BigInteger hpwd) {
-
-        deg = m-1;
-
-        coeffs = new BigInteger[m];
-
-       coeffs[0] = hpwd; //the constant term is hpwd
-
-        for(int i = 1; i < m; i++){
-          coeffs[i] = nextRandomBigInteger(hpwd);
-        }
+    public Polynomial() {
     }
     public BigInteger nextRandomBigInteger(BigInteger n) {
         try {

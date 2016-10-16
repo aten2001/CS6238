@@ -22,7 +22,7 @@ public class Init {
 	protected BigInteger hpwd; //hardened password
 	
 	private BigInteger q; // the 160 bit prime number that's modulus group
-	private BigInteger[] polynomial;
+	private Polynomial polynomial;
 
 	private final int m;  // how many questions/feature answers
 	private final int h;  // how mBigIntegerany records to keep in historyFile file
@@ -34,7 +34,7 @@ public class Init {
 	//This constructor initializes variables common to both 
 	//the NewUser and ExistingUser use cases.
 	public Init(int[] features,int m,String userName){
-
+        polynomial=new Polynomial();
         try{
             random = SecureRandom.getInstance("SHA1PRNG");
             md = MessageDigest.getInstance("SHA-1");
@@ -85,7 +85,7 @@ public class Init {
 		//System.out.println("q is just chosen. it is " + q);
         hpwd = getRandomH(q);
 		//System.out.println("q is just chosen. it is " + q );
-        polynomial = generatePoly(m, hpwd, q);
+        polynomial.coeffs = generatePoly(m, hpwd, q);
         //System.out.println("polynomial is just chosen. q is " + q);
 
 
@@ -213,7 +213,7 @@ public class Init {
 		return m;
 	}
 	public BigInteger[] getPolynomial() {
-		return polynomial;
+		return polynomial.coeffs;
 	}
 	public char[] getPwd() {
 		return pwd;
