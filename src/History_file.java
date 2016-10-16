@@ -1,10 +1,6 @@
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.*;
 import java.io.*;
+import javax.crypto.spec.*;
 import java.math.BigInteger;
 import java.security.*;
 /**

@@ -1,6 +1,5 @@
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * Created by luoyinfeng on 10/14/16.
