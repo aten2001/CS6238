@@ -27,7 +27,7 @@ public class Init {
 	private User user;
 
 
-	public Init(int[] features,int m,String userName){
+	public Init(int[] features,int m,String userName,String user_pwd){
         polynomial_f=new Polynomial();
         try{
             random = SecureRandom.getInstance("SHA1PRNG");
@@ -39,7 +39,7 @@ public class Init {
 		this.h = Main.h;
 		this.user_Name = userName;
 
-		pwd = "CorrectPassword";
+		pwd = user_pwd;
 
 		this.feartures = features;
 		this.inst = new Ins_table(this);
@@ -60,6 +60,8 @@ public class Init {
 		
 	} 
 	public String user_verify(){
+        if(this.pwd.compareTo("CorrectPassword")!=0)
+            return "0";
 		this.inst.read_ins(); // read the alpha and beta values
 
 		this.user = new User(this);
@@ -198,9 +200,7 @@ public class Init {
 	public BigInteger[] getPolynomial() {
 		return polynomial_f.coeffs;
 	}
-	public char[] get_Possword() {
-		return pwd.toCharArray();
-	}
+	public char[] get_Possword() {return pwd.toCharArray();}
 	public String getUserName() {
 		return user_Name;
 	}

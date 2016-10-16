@@ -27,13 +27,13 @@ public class Main {
                         if(counter<5)
                         {
 
-                            Init init = new Init(features,strArray.length,args[1]);
+                            Init init = new Init(features,strArray.length,args[1],line1);
                             init.initialization(counter); //fill the init object with values needed later on.
                             writer.println("1");
                         }
                         else
                         {
-                            Init init = new Init(features,strArray.length,args[1]);
+                            Init init = new Init(features,strArray.length,args[1],line1);
                             writer.println(init.user_verify());
                         }
                         counter++;
