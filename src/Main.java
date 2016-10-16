@@ -37,6 +37,11 @@ public class Main {
                             writer.println(init.user_verify());
                         }
                         counter++;
+                        System.out.println();
+                        System.out.println();
+                        System.out.println();
+                        System.out.println();
+                        System.out.println();
                     }
                     writer.close();
 

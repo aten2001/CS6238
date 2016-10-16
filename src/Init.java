@@ -71,6 +71,9 @@ public class Init {
 	private void generateInstructionTable(){
         q = get_random_q();
         hpwd = get_random_h(q);
+        System.out.println("*************************************************************************************************************");
+        System.out.println("this time hpwd is :"+hpwd);
+        System.out.println("*************************************************************************************************************");
         polynomial_f.coeffs = generatePoly(m, hpwd, q);
 
 		//buildInstrTable

@@ -55,6 +55,8 @@ public class User {
 	private void get_XY(int[] featureValues){
 		try{
 			int counter = featureValues.length;
+			System.out.println("*************************************************************************************************************");
+
 			for(int i=0; i<counter; i++)
 			{	
 				/*getting the alpha and beta values from the Instruction table
@@ -75,9 +77,10 @@ public class User {
 					x_i[i] = init.P_r(inst.getR(), 2*i+1, inst.q);
 					y_i[i] = beta.subtract((init.G_pwd(init.get_Possword(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
 				}
-				//System.out.println("x[" + i + "] is " + xValues[i]);
-				//System.out.println("y[" + i + "] is " + yValues[i]);
+				System.out.println("x_i["+i+"]"+x_i[i]+"     "+"y_i["+i+"]"+y_i[i]);
 			}
+			System.out.println("*************************************************************************************************************");
+
 
 		}
 		catch(Exception e){
@@ -92,12 +95,13 @@ public class User {
 			int count = init.get_m();
 			this.input_hwd = new BigInteger("0");
 			for(int i=0; i<count; i++){			
-				//calculated the hardened password from the 
-				//values in the alpha beta instruction table
+				//calculated the hardened password from the values in the alpha beta instruction table
 				input_hwd = this.input_hwd.add(y_i[i].multiply(feature_values(i)).mod(inst.q));
 			}
 			input_hwd = input_hwd.mod(inst.q);
-
+			System.out.println("*************************************************************************************************************");
+			System.out.println("calculated hpwd is :"+input_hwd);
+			System.out.println("*************************************************************************************************************");
 		}
 		catch(Exception e){
 

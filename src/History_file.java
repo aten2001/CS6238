@@ -75,7 +75,12 @@ public class History_file {
         }
         //		byte[] encrypted = null;
         try {
+            System.out.println("*************************************************************************************************************");
+            System.out.println("Historyfile content before encrypyion:"+history);
             encrypted_Writing = cipher.doFinal(history.getBytes("UTF-8"));
+            System.out.println("Historyfile content after encrypyion:"+encrypted_Writing);
+            System.out.println("*************************************************************************************************************");
+
         } catch (IllegalBlockSizeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -149,6 +154,10 @@ public class History_file {
 			e.printStackTrace();
 		}
         history = getHistory;
+        System.out.println("*************************************************************************************************************");
+        System.out.println("Historyfile content after decrypyion:"+history);
+        System.out.println("*************************************************************************************************************");
+
         return "1";
 	}
 	//verifies the historyFile file

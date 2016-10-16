@@ -115,7 +115,6 @@ public class Ins_table {
 			ObjectInputStream obj;
 			obj = new ObjectInputStream(new FileInputStream(file));
 			q = (BigInteger) obj.readObject();
-			//System.out.println("q is " + q);
 			r = (BigInteger) obj.readObject();
 			int count = init.get_m();
 			for (int i = 0; i < count; i++) {
@@ -141,10 +140,16 @@ public class Ins_table {
 			writer.writeObject(q);
 			writer.writeObject(r);
 			int counter = init.get_m();
+			System.out.println("*************************************************************************************************************");
 			for (int i = 0; i < counter; i++) {
 				writer.writeObject(alpha[i]);
 				writer.writeObject(beta[i]);
+				//**********************************
+				//we can check instruction table here
+				//**********************************
+				System.out.println("alpha["+i+"]"+alpha[i]+"     "+"beta["+i+"]"+beta[i]);
 			}
+			System.out.println("*************************************************************************************************************");
 			writer.close();
 		} catch (FileNotFoundException fe) {
 			System.out.println("File not found ");
