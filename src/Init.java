@@ -124,7 +124,7 @@ public class Init {
     public BigInteger get_random_h(BigInteger q){
         BigInteger candidateH;
 
-        //find a random H that is less than Q
+        //find a random h that is less than q
         do{
             byte bytes[] = new byte[20];
             random.nextBytes(bytes);
