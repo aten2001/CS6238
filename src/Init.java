@@ -160,17 +160,17 @@ public class Init {
 
     public BigInteger G_pwd(char[] pwd, BigInteger r, int input, BigInteger q){
         //try just a concatenation of key at the back (prevent length extension?)
-        byte[] pwdB = charToByteArray(pwd);
-        byte[] rB = r.toByteArray();
-        byte[] inputB = new byte[1];
-        inputB[0] = new Integer(input).byteValue();
+        byte[] pwd_B = charToByteArray(pwd);
+        byte[] r_B = r.toByteArray();
+        byte[] input_B = new byte[1];
+        input_B[0] = new Integer(input).byteValue();
 
         //Concatenate all inputs into 1 long byte array
-        int totalInputLen = pwdB.length + rB.length + inputB.length;
+        int totalInputLen = pwd_B.length + r_B.length + input_B.length;
         byte[] totalInput = new byte[totalInputLen];
-        System.arraycopy(inputB, 0, totalInput, 0,                       inputB.length);
-        System.arraycopy(rB,     0, totalInput, inputB.length,           rB.length);
-        System.arraycopy(pwdB,   0, totalInput, inputB.length+rB.length, pwdB.length);
+        System.arraycopy(input_B, 0, totalInput, 0,                       input_B.length);
+        System.arraycopy(r_B,     0, totalInput, input_B.length,           r_B.length);
+        System.arraycopy(pwd_B,   0, totalInput, input_B.length+r_B.length, pwd_B.length);
 
 
         byte[] digest = md.digest(totalInput);
@@ -193,7 +193,6 @@ public class Init {
 	public int get_h(){
 		return h;
 	}
-
 	public int get_m() {
 		return m;
 	}

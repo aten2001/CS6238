@@ -54,13 +54,11 @@ public class Ins_table {
 		for(int i = 0; i < mean.length; i++){
 			//if feature is distinguishing
 			if( Math.abs(mean[i] - threshold[i]) > Main.k_i * Standard_Deviation[i]){
-					if(mean[i] < threshold[i]){ 
-						System.out.println("disturbing beta " + i); 
-						beta[i] = init.get_random_h(q);
+					if(mean[i] >= threshold[i]){
+						alpha[i] = init.get_random_h(q);
 					}
 					else{
-						System.out.println("disturbing alpha " + i);
-						alpha[i] = init.get_random_h(q);
+						beta[i] = init.get_random_h(q);
 					}
 			}			
 		}		
