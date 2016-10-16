@@ -3,38 +3,35 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Scanner;
+
 
 /**
  * Created by luoyinfeng on 10/11/16.
  */
-//This is a (big) entity class 
-//Main holds a (singleton) Init object
-//The Init object stores system wide parameters
-//like q, m, the polynomial, the hpwd, etc
-//Main passes the init object around to whoever needs the information
+
 public class Init {
     private SecureRandom random;
     private MessageDigest md;
-	private String userName;
-	int[] feartures; // raw feature values (answers to questions)
-	private char[] pwd; //normal, unhardened password
+	private String user_Name;
+
+	private String pwd; //normal, unhardened password
 	protected BigInteger hpwd; //hardened password
 	
 	private BigInteger q; // the 160 bit prime number that's modulus group
-	private Polynomial polynomial;
+	private Polynomial polynomial_f;
 
 	private final int m;  // how many questions/feature answers
 	private final int h;  // how mBigIntegerany records to keep in historyFile file
 	
 	private History_file historyFile;
+    int[] feartures; // raw feature values (answers to questions)
 	private Ins_table inst;
 	private User user;
 
 	//This constructor initializes variables common to both 
 	//the NewUser and ExistingUser use cases.
 	public Init(int[] features,int m,String userName){
-        polynomial=new Polynomial();
+        polynomial_f=new Polynomial();
         try{
             random = SecureRandom.getInstance("SHA1PRNG");
             md = MessageDigest.getInstance("SHA-1");
@@ -42,29 +39,27 @@ public class Init {
             System.err.println("No such algorithm " + e );
         }
 		this.m = m;
-		h = Main.h;
-		this.userName = userName;
-        String temp="CorrectPassword";
-		pwd = temp.toCharArray();
+		this.h = Main.h;
+		this.user_Name = userName;
+
+		pwd = "CorrectPassword";
 
 		this.feartures = features;
-		inst = new Ins_table(this);
-		historyFile = new History_file(this);
+		this.inst = new Ins_table(this);
+		this.historyFile = new History_file(this);
 	}
 
 	public void initialization(int i){
 		//Generate files for this new user...
 		if(i==0) {
 			generateInstructionTable();
-			System.out.println("hpwd is " + hpwd);
-			System.out.println("q is " + q);
 			generateHistoryFile();
 		}
 		else
 		{
-            inst.readInstrTable(); // read the alpha and beta values
-            user = new User(inst,  this, historyFile);
-            user.doLogin();
+            this.inst.readInstrTable(); // read the alpha and beta values
+            this.user = new User(this.inst,  this, this.historyFile);
+            this.user.doLogin();
 		}
 		
 	} 
@@ -85,7 +80,7 @@ public class Init {
 		//System.out.println("q is just chosen. it is " + q);
         hpwd = getRandomH(q);
 		//System.out.println("q is just chosen. it is " + q );
-        polynomial.coeffs = generatePoly(m, hpwd, q);
+        polynomial_f.coeffs = generatePoly(m, hpwd, q);
         //System.out.println("polynomial is just chosen. q is " + q);
 
 
@@ -213,13 +208,13 @@ public class Init {
 		return m;
 	}
 	public BigInteger[] getPolynomial() {
-		return polynomial.coeffs;
+		return polynomial_f.coeffs;
 	}
-	public char[] getPwd() {
-		return pwd;
+	public char[] get_Possword() {
+		return pwd.toCharArray();
 	}
 	public String getUserName() {
-		return userName;
+		return user_Name;
 	}
 	public int[] get_features() {return feartures;}
 }

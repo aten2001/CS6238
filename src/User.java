@@ -66,14 +66,14 @@ public class User {
 					alpha = inst.getAlpha(i);					
 					//calculating the x and y values from the alpha and beta values
 					x_i[i] = init.P(inst.getR(), 2*i, inst.q);
-					y_i[i] = alpha.subtract((init.G(init.getPwd(), inst.getR(), 2*i, inst.q))).mod(inst.q);
+					y_i[i] = alpha.subtract((init.G(init.get_Possword(), inst.getR(), 2*i, inst.q))).mod(inst.q);
 				}
 				else
 				{
 					beta = inst.getBeta(i);				//a needs to be replaced by beta values
 
 					x_i[i] = init.P(inst.getR(), 2*i+1, inst.q);
-					y_i[i] = beta.subtract((init.G(init.getPwd(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
+					y_i[i] = beta.subtract((init.G(init.get_Possword(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
 				}
 				//System.out.println("x[" + i + "] is " + xValues[i]);
 				//System.out.println("y[" + i + "] is " + yValues[i]);

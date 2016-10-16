@@ -30,7 +30,7 @@ public class Ins_table {
 		this.m = init.get_m();
 		this.h = init.get_h();
 
-		this.pwd = init.getPwd();
+		this.pwd = init.get_Possword();
 
 		alpha = new BigInteger[m];
 		beta = new BigInteger[m];
