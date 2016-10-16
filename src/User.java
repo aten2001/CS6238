@@ -16,21 +16,21 @@ public class User {
 	private BigInteger input_hwd;
 
 
-	public User(Ins_table inst, Init init, History_file historyFile){
-		this.inst = inst;
+	public User(Init init){
+		this.inst = init.inst;
 		this.init = init;
-		this.historyFile = historyFile;
+		this.historyFile = init.historyFile;
 		this.x_i = new BigInteger[init.get_m()];
 		this.y_i = new BigInteger[init.get_m()];
 	}
 
-	public String doLogin(){
-		this.calculateXY(init.feartures); 					 //pass feature value
-		this.calculateHpwd();   							//calling the function to calculate Hpwd
+	public String Login(){
+		this.get_XY(init.feartures); 					 //pass features value
+		this.get_Hpwd();   							//calling the function to calculate hpwd
 		this.init.hpwd = input_hwd;
-		this.decryptHistoryFile();							//decrypting the historyFile file.
-		boolean status = this.verifyHistoryFile();			//verifying the historyFile file.
-		if(status)
+		historyFile.decrypt(input_hwd);						//decrypting the history file.
+		boolean result = this.verify();			//verifying the history file.
+		if(result)
 		{
 			System.out.println(init.getUserName()+" login Successful");
 
@@ -39,23 +39,23 @@ public class User {
 			return "0";
 		}
 
-		this.updateHistoryFile();							//updating the historyFile file.
-
-		//if there are more than h log ins already, update mean and standard deviation.
-		if(historyFile.isFull()) {
+		this.historyFile.update_hisfile();
+		System.out.println("*************updating the historyFile file.*******************");
+		//check if the history file is full
+		if(historyFile.full()) {
 			System.out.println("Update the historyfile and recalculate the mean and standard deviation");
-			inst.updateMean(historyFile.getHistoryFile());
-			inst.calculateStd_Dev(historyFile.getHistoryFile());
-			inst.disturbValues();
-		}		
-		inst.writeInstrTable();
+			this.inst.calculateMean(historyFile.getHistoryFile());
+			this.inst.calculateStd_Dev(historyFile.getHistoryFile());
+			this.inst.disturbValues();
+		}
+		this.inst.write_ins();
 		return "1";
 	}
 
-	private void calculateXY(int[] featureValues){
+	private void get_XY(int[] featureValues){
 		try{
-			int count = featureValues.length;
-			for(int i=0; i<count; i++)
+			int counter = featureValues.length;
+			for(int i=0; i<counter; i++)
 			{	
 				/*getting the alpha and beta values from the Instruction table
 				 *and comparing it to threshold value to get the alpha and 
@@ -65,15 +65,15 @@ public class User {
 				if(value<inst.threshold[i]){			    
 					alpha = inst.getAlpha(i);					
 					//calculating the x and y values from the alpha and beta values
-					x_i[i] = init.P(inst.getR(), 2*i, inst.q);
-					y_i[i] = alpha.subtract((init.G(init.get_Possword(), inst.getR(), 2*i, inst.q))).mod(inst.q);
+					x_i[i] = init.P_r(inst.getR(), 2*i, inst.q);
+					y_i[i] = alpha.subtract((init.G_pwd(init.get_Possword(), inst.getR(), 2*i, inst.q))).mod(inst.q);
 				}
 				else
 				{
 					beta = inst.getBeta(i);				//a needs to be replaced by beta values
 
-					x_i[i] = init.P(inst.getR(), 2*i+1, inst.q);
-					y_i[i] = beta.subtract((init.G(init.get_Possword(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
+					x_i[i] = init.P_r(inst.getR(), 2*i+1, inst.q);
+					y_i[i] = beta.subtract((init.G_pwd(init.get_Possword(), inst.getR(), 2*i+1, inst.q))).mod(inst.q);
 				}
 				//System.out.println("x[" + i + "] is " + xValues[i]);
 				//System.out.println("y[" + i + "] is " + yValues[i]);
@@ -86,8 +86,8 @@ public class User {
 		}
 	}
 
-	//method to calculate Hpwd
-	private void calculateHpwd(){
+	//calculate Hpwd
+	private void get_Hpwd(){
 		try{
 			int count = init.get_m();
 			this.input_hwd = new BigInteger("0");
@@ -104,27 +104,13 @@ public class User {
 		}
 	}
 
-	//calls the decrypt method in the historyFile file
-	private String decryptHistoryFile(){
-		return historyFile.decrypt(input_hwd);
-	}
 
 	//verifies the decrypted file
-	private boolean verifyHistoryFile(){
-		return historyFile.checkDecryption();
+	private boolean verify(){
+		return historyFile.check_intergity();
 	}
 
-	//updated the historyFile file
-	//calls a method in the historyFile class.
-	private void updateHistoryFile(){
-		historyFile.update();
-	}
-
-	private void generateInstructionsTable(String pass){
-		//TODO: the instruction table needs to be build
-	}
-
-	//method to calculate feature_values that is used in Hped calculation
+	//calculate raw feature_values
 	private BigInteger feature_values(int i){
 		BigInteger feature_values = new BigInteger("1");
 		try{ 

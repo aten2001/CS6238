@@ -12,22 +12,21 @@ public class Init {
     private MessageDigest md;
 	private String user_Name;
 
-	private String pwd; //normal, unhardened password
+	private String pwd;
 	protected BigInteger hpwd; //hardened password
 	
-	private BigInteger q; // the 160 bit prime number that's modulus group
+	private BigInteger q; // the 160 bit prime
 	private Polynomial polynomial_f;
 
-	private final int m;  // how many questions/feature answers
-	private final int h;  // how mBigIntegerany records to keep in historyFile file
+	private int m;  // how many features
+	private int h;  // how many records in historyFile file
 	
-	private History_file historyFile;
-    int[] feartures; // raw feature values (answers to questions)
-	private Ins_table inst;
+	public History_file historyFile;
+    int[] feartures; // raw feature values
+	public Ins_table inst;
 	private User user;
 
-	//This constructor initializes variables common to both 
-	//the NewUser and ExistingUser use cases.
+
 	public Init(int[] features,int m,String userName){
         polynomial_f=new Polynomial();
         try{
@@ -48,54 +47,44 @@ public class Init {
 	}
 
 	public void initialization(int i){
-		//Generate files for this new user...
 		if(i==0) {
 			generateInstructionTable();
 			generateHistoryFile();
 		}
 		else
 		{
-            this.inst.readInstrTable(); // read the alpha and beta values
-            this.user = new User(this.inst,  this, this.historyFile);
-            this.user.doLogin();
+            this.inst.read_ins(); // read the alpha and beta values
+            this.user = new User(  this);
+            this.user.Login();
 		}
 		
 	} 
 	public String user_verify(){
-		inst.readInstrTable(); // read the alpha and beta values
+		this.inst.read_ins(); // read the alpha and beta values
 
-		user = new User(inst, this, historyFile);
-		return user.doLogin();
+		this.user = new User(this);
+		return this.user.Login();
 		
 	}
 	
-	//This is run when a new user is created
-	//Or else the instruction table is usually
-	//read from a file instead. 
+	//generateInstructionTable
 	private void generateInstructionTable(){
-
-        q = getRandomQ();
-		//System.out.println("q is just chosen. it is " + q);
-        hpwd = getRandomH(q);
-		//System.out.println("q is just chosen. it is " + q );
+        q = get_random_q();
+        hpwd = get_random_h(q);
         polynomial_f.coeffs = generatePoly(m, hpwd, q);
-        //System.out.println("polynomial is just chosen. q is " + q);
-
 
 		//buildInstrTable
-		inst.buildInstrTable();
+		inst.newInstrTable();
         //encrypted and write it to disk
-		inst.writeInstrTable();
+		inst.write_ins();
 	}
 
-	//This is run to create a new historyFile file
-	//for a new user. Or else the historyFile is usually
-	//read from a file instead.
+	//generateHistoryFile
 	private void generateHistoryFile(){
-		historyFile.update(); //create new historyFile file and encrypt and write it to disk.
+		historyFile.update_hisfile(); //create new historyFile file and encrypt and write it to disk.
 	}
     //evalute poly at point x
-    public BigInteger evaluatePoly(BigInteger[] poly, BigInteger q, BigInteger x){
+    public BigInteger slove_Poly(BigInteger[] poly, BigInteger q, BigInteger x){
         BigInteger runningTotal = new BigInteger("0");
         for(int i = 0; i < poly.length; i++){
             runningTotal = runningTotal.add(x.modPow(new BigInteger(new Integer(i).toString()), q).multiply(poly[i]));
@@ -111,25 +100,25 @@ public class Init {
         coeffs[0] = hpwd; //the constant term is hpwd
 
         for(int i = 1; i < m; i++){
-            coeffs[i] = getRandomH(q); //getRandomH method doubles up as get random element \in \Z_q
+            coeffs[i] = get_random_h(q); //getRandomH method doubles up as get random element \in \Z_q
         }
         return coeffs;
     }
 
-    public BigInteger getRandomQ(){
-        BigInteger candidateQ;
+    public BigInteger get_random_q(){
+        BigInteger input_q;
         do{
             byte bytes[] = new byte[20];
             random.nextBytes(bytes);
 
-            candidateQ = new BigInteger(bytes);
+            input_q = new BigInteger(bytes);
         }
-        while(candidateQ.compareTo(BigInteger.ZERO) != 1  || isPrime(candidateQ) == false);
+        while(input_q.compareTo(BigInteger.ZERO) != 1  || isPrime(input_q) == false);
 
-        return candidateQ;
+        return input_q;
     }
 
-    public BigInteger getRandomH(BigInteger q){
+    public BigInteger get_random_h(BigInteger q){
         BigInteger candidateH;
 
         //find a random H that is less than Q
@@ -145,12 +134,10 @@ public class Init {
     }
 
     private boolean isPrime(BigInteger num){
-        //Perform Miller Rabin's test
-        return num.isProbablePrime(10); //99.90234375% confidence
+        return num.isProbablePrime(10);
     }
 
-    //implementation of P_r() "PRP" with SHA-1 (likely not a PRP?)
-    public BigInteger P(BigInteger r, int input, BigInteger q){
+    public BigInteger P_r(BigInteger r, int input, BigInteger q){
         byte[] rB = r.toByteArray();
         byte[] inputB = new byte[1];
         inputB[0] = new Integer(input).byteValue();
@@ -165,8 +152,8 @@ public class Init {
         return new BigInteger(digest).mod(q);
     }
 
-    //implementation of G_pwd() "PRF" to use to calculate alpha and beta
-    public BigInteger G(char[] pwd, BigInteger r, int input, BigInteger q){
+
+    public BigInteger G_pwd(char[] pwd, BigInteger r, int input, BigInteger q){
         //try just a concatenation of key at the back (prevent length extension?)
         byte[] pwdB = charToByteArray(pwd);
         byte[] rB = r.toByteArray();
